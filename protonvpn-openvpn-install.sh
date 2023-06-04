@@ -1,5 +1,11 @@
 #!/bin/sh
 
+#Chekcs if user is running in root
+if (( $EUID != 0 )); then
+    echo "Run as root"
+    exit
+fi
+
 #Variables
 #Set /etc/openvpn/scripts to $OvpnS
 OvpnS="/etc/openvpn/scripts"
