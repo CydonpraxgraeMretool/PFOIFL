@@ -1,10 +1,8 @@
 #!/bin/sh
 
-#Chekcs if user is running in root
-if (( $EUID != 0 )); then
-    echo "Run as root"
-    exit
-fi
+#Checks if user is running in root
+[ "$UID" = 1000 ] && echo "Run as root" & exit
+[ "$UID" = 0 ] &&
 
 #Variables
 #Set /etc/openvpn/scripts to $OvpnS
@@ -38,7 +36,7 @@ down /etc/openvpn/scripts/update-systemd-resolved
 down-pre
 dhcp-option DOMAIN-ROUTE ." >> /etc/openvpn/client/client.conf
 touch /etc/polkit-1/rules.d/00-openvpn-resolved.rules
-echo -e "polkit.addRule(function(action, subject) {
+echo "polkit.addRule(function(action, subject) {
     if (action.id == 'org.freedesktop.resolve1.set-dns-servers' ||
         action.id == 'org.freedesktop.resolve1.set-domains' ||
         action.id == 'org.freedesktop.resolve1.set-dnssec') {
