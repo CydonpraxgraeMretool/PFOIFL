@@ -1,17 +1,21 @@
 #!/bin/sh
 
 #Checks if user is running in root
-[ "$UID" = 1000 ] && echo "Run as root" & exit
-[ "$UID" = 0 ] &&
+[ "$(id -ru)" = 1000 ] && echo "Run as root" && exit
+[ "$(id -ru)" = 0 ] &&
+
+#Checks if dependencies are installed & 
+#Tells user if not
+! [ -e "/etc/polkit-1/" ] && echo "install polkit" ; p="1"
+! [ -e "/usr/bin/wget" ] && echo "install wget" ; w="1"
+! [ -e "/usr/bin/openvpn" ] && echo "install openvpn" ; o="1"
+[ $(($p+$w+$o)) -lt 3 ] && exit
 
 #Variables
 #Set /etc/openvpn/scripts to $OvpnS
 OvpnS="/etc/openvpn/scripts"
 #Set Version Number of update-systemd-resolved
 RV="1.3.0"
-
-#Install required packages
-#pacman -S wget openvpn polkit
 
 #Install update-systemd-resolved
 mkdir $OvpnS
